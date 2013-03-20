@@ -1,0 +1,10 @@
+{
+    "name": "ivan-novakov/shongo-authn-server",
+    "description": "Authentication server for the Shongo project",
+    "license": "FreeBSD",
+
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": ">2.1.3"
+    }
+}
