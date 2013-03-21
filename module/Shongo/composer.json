@@ -1,0 +1,23 @@
+{
+    "name" : "ivan-novakov/phpid-server-shongo",
+    "description" : "phpID server specifics for the Shongo project",
+    "license" : "FreeBSD",
+    "authors" : [
+        {
+            "name" : "Ivan Novakov",
+            "homepage": "http://novakov.cz/"
+        }
+    ],
+    "require": {
+        "php" : ">=5.3.0",
+        "zendframework/zendframework" : "2.*"
+    },
+    "autoload" : {
+        "psr-0" : {
+            "Shongo" : "src"
+        },
+        "classmap": [
+            "Module.php"
+        ]
+    }
+}
