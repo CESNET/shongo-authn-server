@@ -1,0 +1,56 @@
+{
+    "clients" : [
+        {
+            "id" : "test-console-client-dummy",
+            "type" : "public",
+            "redirect_uri" : "https://client/dummy",
+            "authentication" : {
+                "method" : "secret",
+                "options" : {
+                    "auth" : "testclientsecret"
+                }
+            },
+            "user_authentication_handler" : "dummy"
+        },
+
+        {
+            "id" : "test-console-client-basicauth",
+            "type" : "public",
+            "redirect_uri" : "https://client/basic-auth",
+            "authentication" : {
+                "method" : "secret",
+                "options" : {
+                    "auth" : "b5684ac738b200ba8de5185a5c6f1418"
+                }
+            },
+            "user_authentication_handler" : "basic-auth"
+        },
+
+        {
+            "id" : "test-web-client",
+            "type" : "confidential",
+            "redirect_uri" : "https://hroch.cesnet.cz/devel/phpid-client",
+            "authentication" : {
+                "method" : "secret",
+                "options" : {
+                    "auth" : "081ac9f31ef035bfb7054c1e3b385501"
+                }
+            },
+            "user_authentication_handler" : "shibboleth"
+        },
+
+        {
+            "id" : "test-web-client-shongo-dev",
+            "type" : "confidential",
+            "redirect_uri" : "https://shongo-auth-dev.cesnet.cz/devel/phpid-client",
+            "authentication" : {
+                "method" : "secret",
+                "options" : {
+                    "auth" : "081ac9f31ef035bfb7054c1e3b385501"
+                }
+            },
+            "user_authentication_handler" : "shibboleth"
+        }
+
+    ]
+}
