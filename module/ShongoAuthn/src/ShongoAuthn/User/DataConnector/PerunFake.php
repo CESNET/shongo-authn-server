@@ -9,6 +9,8 @@ use ShongoAuthn\User\User;
 use PhpIdServer\User\UserInterface;
 use PhpIdServer\User\DataConnector\AbstractDataConnector;
 use PhpIdServer\User\DataConnector\Exception as DataConnectorException;
+use Zend\Db\Sql\SqlInterface;
+use Zend\Db\ResultSet\ResultSet;
 
 
 class PerunFake extends AbstractDataConnector
@@ -21,16 +23,83 @@ class PerunFake extends AbstractDataConnector
      * 
      * @var Adapter
      */
-    protected $_db = null;
+    protected $dbAdapter = null;
+
+    /**
+     * SQL abstraction object.
+     * 
+     * @var Sql
+     */
+    protected $sql = null;
 
 
     /**
-     * (non-PHPdoc)
+     * Sets the DB adapter.
+     * 
+     * @param Adapter $dbAdapter
+     */
+    public function setDbAdapter(Adapter $dbAdapter)
+    {
+        $this->dbAdapter = $dbAdapter;
+        
+        /*
+         * temp fix for https://github.com/zendframework/zf2/pull/4081
+        */
+        $driver = $this->dbAdapter->getDriver();
+        $driver->getConnection()
+            ->connect();
+        $this->dbAdapter->getPlatform()
+            ->setDriver($driver);
+        /* --- */
+        
+        $this->setSql($this->createSql($this->dbAdapter));
+    }
+
+
+    /**
+     * Returns the DB handler.
+     *
+     * @return Adapter
+     */
+    public function getDbAdapter()
+    {
+        if (! ($this->dbAdapter instanceof Adapter)) {
+            $this->setDbAdapter($this->createDbAdapter());
+        }
+        
+        return $this->dbAdapter;
+    }
+
+
+    /**
+     * Sets the SQL abstraction object.
+     * 
+     * @param Sql $sqlObject
+     */
+    public function setSql(Sql $sqlObject)
+    {
+        $this->sql = $sqlObject;
+    }
+
+
+    /**
+     * Returns the SQL abstraction object.
+     * 
+     * @return Sql
+     */
+    public function getSql()
+    {
+        return $this->sql;
+    }
+
+
+    /**
+     * {@inheritdoc}
      * @see \PhpIdServer\User\DataConnector\DataConnectorInterface::populateUser()
      */
-    public function populateUser (UserInterface $user)
+    public function populateUser(UserInterface $user)
     {
-        $this->_populateShongoUser($user);
+        $this->populateShongoUser($user);
     }
 
 
@@ -39,28 +108,41 @@ class PerunFake extends AbstractDataConnector
      * 
      * @param User $user
      */
-    protected function _populateShongoUser (User $user)
+    protected function populateShongoUser(User $user)
     {
-        $userData = $this->_loadUserData($user);
+        $userData = $this->loadUserData($user);
         if (null === $userData) {
-            $userData = $this->_saveUserData($user);
+            $userData = $this->saveUserData($user);
         }
         
         $user->populate((array) $userData);
     }
 
 
-    protected function _loadUserData (User $user)
+    /**
+     * Loads and returns data about the user.
+     * 
+     * @param User $user
+     * @return ResultSet|null
+     */
+    protected function loadUserData(User $user)
     {
-        return $this->_loadUserDataBy(array(
+        return $this->loadUserDataBy(array(
             'original_id' => $user->getId()
         ));
     }
 
 
-    protected function _loadUserDataBy (array $conds)
+    /**
+     * Loads user data based on the provided conditions.
+     * 
+     * @param array $conds
+     * @throws DataConnectorException\InvalidResponseException
+     * @return ResultSet|null
+     */
+    protected function loadUserDataBy(array $conds)
     {
-        $db = $this->_getDbHandler();
+        $db = $this->getDbAdapter();
         $sql = new Sql($db);
         $select = $sql->select();
         
@@ -81,9 +163,15 @@ class PerunFake extends AbstractDataConnector
     }
 
 
-    protected function _saveUserData (User $user)
+    /**
+     * Saves user data to the storage.
+     * 
+     * @param User $user
+     * @return ResultSet|null
+     */
+    protected function saveUserData(User $user)
     {
-        $db = $this->_getDbHandler();
+        $db = $this->getDbAdapter();
         $sql = new Sql($db);
         $insert = $sql->insert();
         
@@ -96,23 +184,43 @@ class PerunFake extends AbstractDataConnector
             'register_time' => new Expression('NOW()')
         ));
         
-        $result = $db->query($sql->getSqlStringForSqlObject($insert), $db::QUERY_MODE_EXECUTE);
+        $result = $db->query($sql->getSqlStringForSqlObject($insert), Adapter::QUERY_MODE_EXECUTE);
         
-        return $this->_loadUserDataBy(array(
+        return $this->loadUserDataBy(array(
             'id' => $result->getGeneratedValue()
         ));
     }
 
 
     /**
-     * @return \Zend\Db\Adapter\Adapter
+     * Creates and returns new DB adapter.
+     * 
+     * @param array $options
+     * @return Adapter
      */
-    protected function _getDbHandler ()
+    protected function createDbAdapter(array $options = null)
     {
-        if (! ($this->_db instanceof Adapter)) {
-            $this->_db = new Adapter($this->getOption(self::OPT_ADAPTER));
+        if (null === $options) {
+            $options = $this->getOption(self::OPT_ADAPTER);
         }
         
-        return $this->_db;
+        $adapter = new Adapter($options);
+        if (isset($options['charset'])) {
+            $adapter->query(sprintf("SET NAMES '%s'", $options['charset']), Adapter::QUERY_MODE_EXECUTE);
+        }
+        
+        return $adapter;
+    }
+
+
+    /**
+     * Creates and returns new SQL abstraction object.
+     * 
+     * @param Adapter $dbAdapter
+     * @return Sql
+     */
+    protected function createSql(Adapter $dbAdapter)
+    {
+        return new Sql($dbAdapter);
     }
 }

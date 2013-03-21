@@ -13,7 +13,8 @@ return array(
             'adapter' => array(
                 'driver' => 'Pdo_Mysql', 
                 'host' => 'localhost', 
-                'database' => 'phpidserver'
+                'database' => 'phpidserver',
+                'charset' => 'utf8'
             )
         )
     ), 
