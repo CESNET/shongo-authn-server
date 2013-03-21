@@ -1,11 +1,11 @@
 <?php
 
-namespace Shongo\User\DataConnector;
+namespace ShongoAuthn\User\DataConnector;
 
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Adapter\Adapter;
-use Shongo\User\User;
+use ShongoAuthn\User\User;
 use PhpIdServer\User\UserInterface;
 use PhpIdServer\User\DataConnector\AbstractDataConnector;
 use PhpIdServer\User\DataConnector\Exception as DataConnectorException;

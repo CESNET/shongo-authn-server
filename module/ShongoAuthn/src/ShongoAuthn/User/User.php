@@ -1,6 +1,6 @@
 <?php
 
-namespace Shongo\User;
+namespace ShongoAuthn\User;
 
 
 /**

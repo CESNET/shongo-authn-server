@@ -1,6 +1,6 @@
 <?php
 
-namespace Shongo\User\UserInfo\Mapper;
+namespace ShongoAuthn\User\UserInfo\Mapper;
 
 use PhpIdServer\User\UserInterface;
 use PhpIdServer\User\UserInfo\Mapper\AbstractMapper;

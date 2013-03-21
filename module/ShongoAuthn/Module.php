@@ -1,6 +1,6 @@
 <?php
 
-namespace Shongo;
+namespace ShongoAuthn;
 
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
@@ -14,10 +14,6 @@ class Module implements AutoloaderProviderInterface
     public function getAutoloaderConfig ()
     {
         return array(
-            
-            'Zend\Loader\ClassMapAutoloader' => array(
-                __DIR__ . '/autoload_classmap.php'
-            ), 
             
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(

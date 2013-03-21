@@ -3,12 +3,12 @@
 return array(
     
     'user_factory' => array(
-        'user_class' => '\Shongo\User\User'
+        'user_class' => '\ShongoAuthn\User\User'
     ), 
     
     'data_connectors' => array(
         'perun' => array(
-            'class' => '\Shongo\User\DataConnector\PerunFake', 
+            'class' => '\ShongoAuthn\User\DataConnector\PerunFake', 
             'options' => array(
                 'adapter' => array(
                     'driver' => 'Pdo_Mysql', 
