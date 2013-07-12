@@ -6,9 +6,9 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Adapter\Adapter;
 use ShongoAuthn\User\User;
-use PhpIdServer\User\UserInterface;
-use PhpIdServer\User\DataConnector\AbstractDataConnector;
-use PhpIdServer\User\DataConnector\Exception as DataConnectorException;
+use InoOicServer\User\UserInterface;
+use InoOicServer\User\DataConnector\AbstractDataConnector;
+use InoOicServer\User\DataConnector\Exception as DataConnectorException;
 use Zend\Db\Sql\SqlInterface;
 use Zend\Db\ResultSet\ResultSet;
 
@@ -95,7 +95,7 @@ class PerunFake extends AbstractDataConnector
 
     /**
      * {@inheritdoc}
-     * @see \PhpIdServer\User\DataConnector\DataConnectorInterface::populateUser()
+     * @see \InoOicServer\User\DataConnector\DataConnectorInterface::populateUser()
      */
     public function populateUser(UserInterface $user)
     {

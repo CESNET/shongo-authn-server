@@ -9,7 +9,7 @@ namespace ShongoAuthn\User;
  * @method string getOriginalId()
  * @method void setOriginalId() setOriginalId(string $originalId)
  */
-class User extends \PhpIdServer\User\User
+class User extends \InoOicServer\User\User
 {
 
     const FIELD_ORIGINAL_ID = 'original_id';

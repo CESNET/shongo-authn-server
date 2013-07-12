@@ -2,8 +2,8 @@
 
 namespace ShongoAuthn\User\UserInfo\Mapper;
 
-use PhpIdServer\User\UserInterface;
-use PhpIdServer\User\UserInfo\Mapper\AbstractMapper;
+use InoOicServer\User\UserInterface;
+use InoOicServer\User\UserInfo\Mapper\AbstractMapper;
 
 
 class Shongo extends AbstractMapper
