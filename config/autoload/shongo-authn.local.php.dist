@@ -1,5 +1,4 @@
 <?php
-
 return array(
     
     'data_connectors' => array(
@@ -12,8 +11,7 @@ return array(
                     'host' => 'localhost',
                     'dbname' => 'shongo',
                     'username' => 'admin',
-                    'password' => 'passwd',
-                    'charset' => 'utf8'
+                    'password' => 'passwd'
                 )
             )
         )
