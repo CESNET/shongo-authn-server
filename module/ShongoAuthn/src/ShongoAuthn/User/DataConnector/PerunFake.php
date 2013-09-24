@@ -13,7 +13,7 @@ use Zend\Db\Sql\SqlInterface;
 use Zend\Db\ResultSet\ResultSet;
 
 
-class PerunFake extends AbstractDataConnector
+class PerunFake extends AbstractDataConnector implements ShongoDataConnectorInterface
 {
 
     const OPT_ADAPTER = 'adapter';
@@ -46,10 +46,8 @@ class PerunFake extends AbstractDataConnector
          * temp fix for https://github.com/zendframework/zf2/pull/4081
         */
         $driver = $this->dbAdapter->getDriver();
-        $driver->getConnection()
-            ->connect();
-        $this->dbAdapter->getPlatform()
-            ->setDriver($driver);
+        $driver->getConnection()->connect();
+        $this->dbAdapter->getPlatform()->setDriver($driver);
         /* --- */
         
         $this->setSql($this->createSql($this->dbAdapter));
@@ -104,11 +102,10 @@ class PerunFake extends AbstractDataConnector
 
 
     /**
-     * Populates the Shongo specific user entity.
-     * 
-     * @param User $user
+     * {@inhertidoc}
+     * @see \ShongoAuthn\User\DataConnector\ShongoDataConnectorInterface::populateShongoUser()
      */
-    protected function populateShongoUser(User $user)
+    public function populateShongoUser(User $user)
     {
         $userData = $this->loadUserData($user);
         if (null === $userData) {
@@ -146,8 +143,7 @@ class PerunFake extends AbstractDataConnector
         $sql = new Sql($db);
         $select = $sql->select();
         
-        $select->from('user')
-            ->where($conds);
+        $select->from('user')->where($conds);
         
         $result = $db->query($sql->getSqlStringForSqlObject($select), $db::QUERY_MODE_EXECUTE);
         $count = $result->count();
@@ -156,7 +152,8 @@ class PerunFake extends AbstractDataConnector
         }
         
         if ($count > 1) {
-            throw new DataConnectorException\InvalidResponseException(sprintf("User query returned more than one results: %d records", $count));
+            throw new DataConnectorException\InvalidResponseException(
+                sprintf("User query returned more than one results: %d records", $count));
         }
         
         return $result->current();
@@ -175,14 +172,14 @@ class PerunFake extends AbstractDataConnector
         $sql = new Sql($db);
         $insert = $sql->insert();
         
-        $insert->into('user')
-            ->values(array(
-            'given_name' => $user->getGivenName(), 
-            'family_name' => $user->getFamilyName(), 
-            'email' => $user->getEmail(), 
-            'original_id' => $user->getId(), 
-            'register_time' => new Expression('NOW()')
-        ));
+        $insert->into('user')->values(
+            array(
+                'given_name' => $user->getGivenName(),
+                'family_name' => $user->getFamilyName(),
+                'email' => $user->getEmail(),
+                'original_id' => $user->getId(),
+                'register_time' => new Expression('NOW()')
+            ));
         
         $result = $db->query($sql->getSqlStringForSqlObject($insert), Adapter::QUERY_MODE_EXECUTE);
         

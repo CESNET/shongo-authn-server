@@ -1,6 +1,7 @@
+.buildpath
 composer.lock
 vendor
 data/auth/users.php
 data/client/metadata.json
-
+public/__ii.php
 
