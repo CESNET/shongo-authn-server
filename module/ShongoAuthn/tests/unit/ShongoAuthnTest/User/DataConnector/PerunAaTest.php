@@ -14,6 +14,11 @@ class PerunAaTest extends \PHPUnit_Framework_Testcase
     public function setUp()
     {
         $this->dataConnector = new PerunAa();
+        $this->dataConnector->setOptions(
+            array(
+                PerunAa::OPT_PERUN_ID_VAR_NAME => 'perunId',
+                PerunAa::OPT_PERUN_VO_NAME_VAR_NAME => 'voName'
+            ));
     }
 
 
@@ -21,6 +26,7 @@ class PerunAaTest extends \PHPUnit_Framework_Testcase
     {
         $this->setExpectedException('ShongoAuthn\User\DataConnector\Exception\MissingOptionException');
         
+        $this->dataConnector->setOptions(array());
         $user = $this->getUserMock();
         $this->dataConnector->populateUser($user);
     }
@@ -28,9 +34,6 @@ class PerunAaTest extends \PHPUnit_Framework_Testcase
 
     public function testPopulateUserWithMissingValue()
     {
-        $this->dataConnector->setOptions(array(
-            PerunAa::OPT_PERUN_ID_VAR_NAME => 'perunId'
-        ));
         $this->dataConnector->setServerVars(array());
         
         $user = $this->getUserMock();
@@ -46,9 +49,6 @@ class PerunAaTest extends \PHPUnit_Framework_Testcase
         $key = 'perunId';
         $value = 'foo';
         
-        $this->dataConnector->setOptions(array(
-            PerunAa::OPT_PERUN_ID_VAR_NAME => $key
-        ));
         $this->dataConnector->setServerVars(array(
             $key => $value
         ));
@@ -66,9 +66,6 @@ class PerunAaTest extends \PHPUnit_Framework_Testcase
         $key = 'perunId';
         $value = 123;
         
-        $this->dataConnector->setOptions(array(
-            PerunAa::OPT_PERUN_ID_VAR_NAME => $key
-        ));
         $this->dataConnector->setServerVars(array(
             $key => $value
         ));
@@ -77,6 +74,29 @@ class PerunAaTest extends \PHPUnit_Framework_Testcase
         $user->expects($this->once())
             ->method('setPerunId')
             ->with($value);
+        
+        $this->dataConnector->populateUser($user);
+    }
+
+
+    public function testPopulateUserWithVoName()
+    {
+        $key = 'voName';
+        $value = 'foo;bar';
+        
+        $vos = array(
+            'foo',
+            'bar'
+        );
+        
+        $this->dataConnector->setServerVars(array(
+            $key => $value
+        ));
+        
+        $user = $this->getUserMock();
+        $user->expects($this->once())
+            ->method('setPerunVos')
+            ->with($vos);
         
         $this->dataConnector->populateUser($user);
     }
@@ -92,7 +112,8 @@ class PerunAaTest extends \PHPUnit_Framework_Testcase
     {
         $user = $this->getMockBuilder('ShongoAuthn\User\User')
             ->setMethods(array(
-            'setPerunId'
+            'setPerunId',
+            'setPerunVos'
         ))
             ->getMock();
         return $user;
