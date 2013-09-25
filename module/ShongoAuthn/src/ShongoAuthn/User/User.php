@@ -12,6 +12,8 @@ namespace ShongoAuthn\User;
  * @method void setPerunId(integer $perunId)
  * @method string getPerunUrl()
  * @method void setPerunUrl(string $perunUrl)
+ * @method array getPerunVos()
+ * @method void setPerunVos(array $vos)
  */
 class User extends \InoOicServer\User\User
 {
@@ -24,6 +26,8 @@ class User extends \InoOicServer\User\User
 
     const FIELD_PERUN_URL = 'perun_url';
 
+    const FIELD_PERUN_VOS = 'perun_vos';
+
     protected $_fields = array(
         self::FIELD_ID,
         self::FIELD_NAME,
@@ -34,6 +38,7 @@ class User extends \InoOicServer\User\User
         self::FIELD_ORIGINAL_ID,
         self::FIELD_REGISTER_TIME,
         self::FIELD_PERUN_ID,
-        self::FIELD_PERUN_URL
+        self::FIELD_PERUN_URL,
+        self::FIELD_PERUN_VOS
     );
 }

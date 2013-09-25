@@ -15,6 +15,10 @@ class PerunAa extends AbstractDataConnector implements ShongoDataConnectorInterf
 
     const OPT_PERUN_ID_VAR_NAME = 'perun_id_var_name';
 
+    const OPT_PERUN_VO_NAME_VAR_NAME = 'perun_vo_name_var_name';
+
+    const MULTI_VALUE_DELIMITER = ';';
+
     /**
      * The server system variables ($_SERVER).
      * @var array
@@ -68,6 +72,10 @@ class PerunAa extends AbstractDataConnector implements ShongoDataConnectorInterf
         if (($perunId = $this->extractPerunId()) && $perunId) {
             $user->setPerunId($perunId);
         }
+        
+        if (($perunVos = $this->extractPerunVos())) {
+            $user->setPerunVos($perunVos);
+        }
     }
 
 
@@ -85,6 +93,24 @@ class PerunAa extends AbstractDataConnector implements ShongoDataConnectorInterf
         }
         
         return intval($this->getServerVar($varName));
+    }
+
+
+    /**
+     * Extracts the list of Perun VOs, the user is member of.
+     * 
+     * @return array
+     */
+    protected function extractPerunVos()
+    {
+        $varName = $this->getOption(self::OPT_PERUN_VO_NAME_VAR_NAME);
+        if (null === $varName) {
+            throw new Exception\MissingOptionException(self::OPT_PERUN_VO_NAME_VAR_NAME);
+        }
+        
+        $rawValue = $this->getServerVar($varName);
+        
+        return explode(self::MULTI_VALUE_DELIMITER, $rawValue);
     }
 
 
