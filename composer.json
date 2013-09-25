@@ -15,7 +15,13 @@
 
     "require" : {
         "php" : ">=5.3.3",
-        "zendframework/zendframework" : ">2.2.0",
+        "zendframework/zend-modulemanager" : ">=2.2.0",
+        "zendframework/zend-mvc" : ">=2.2.0",
+        "zendframework/zend-config" : ">=2.2.0",
+        "zendframework/zend-db" : ">=2.2.0",
+        "zendframework/zend-form" : ">=2.2.0",
+        "zendframework/zend-view" : ">=2.2.0",
+        "zendframework/zend-console" : ">=2.2.0",
         "ivan-novakov/zf2-openid-connect-server-module" : "dev-master"
     }
 }
