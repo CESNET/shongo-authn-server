@@ -33,7 +33,7 @@ return array(
         'perun_user' => array(
             'class' => 'ShongoAuthn\User\Validator\PerunUser',
             'options' => array(
-                'registration_uri' => 'https://perun.metacentrum.cz/perun-registrar-fed/'
+                'registration_uri' => 'https://perun.example.org/perun-registrar-fed/'
             )
         )
     ),
@@ -50,13 +50,7 @@ return array(
                     'REMOTE_USER' => array(
                         'name' => 'eppn',
                         'required' => true,
-                        'validators' => array(
-/*
- 'email' => array(
- 'name' => 'email_address'
- )
-*/
-)
+                        'validators' => array()                        
                     ),
                     'mail' => array(
                         'name' => 'mail',
