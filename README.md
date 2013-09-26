@@ -1,2 +1,0 @@
-Shongo Authentication Server
-============================
