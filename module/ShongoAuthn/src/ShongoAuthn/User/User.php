@@ -6,6 +6,14 @@ namespace ShongoAuthn\User;
 /**
  * User entity specific to the Shongo application.
  * 
+ * @method string getPhoneNumber()
+ * @method void setPhoneNumber(string $phoneNumber)
+ * @method string getOrganization()
+ * @method void setOrganization(string $organization)
+ * @method string getLocale()
+ * @method void setLocale(string $locale)
+ * @method string getZoneInfo()
+ * @method void setZoneIndo(string $zoneInfo)
  * @method string getOriginalId()
  * @method void setOriginalId(string $originalId)
  * @method integer getPerunId()
@@ -18,9 +26,15 @@ namespace ShongoAuthn\User;
 class User extends \InoOicServer\User\User
 {
 
-    const FIELD_ORIGINAL_ID = 'original_id';
+    const FIELD_PHONE_NUMBER = 'phone_number';
 
-    const FIELD_REGISTER_TIME = 'register_time';
+    const FIELD_ORGANIZATION = 'organization';
+
+    const FIELD_LOCALE = 'locale';
+
+    const FIELD_ZONEINFO = 'zoneinfo';
+
+    const FIELD_ORIGINAL_ID = 'original_id';
 
     const FIELD_PERUN_ID = 'perun_id';
 
@@ -35,8 +49,11 @@ class User extends \InoOicServer\User\User
         self::FIELD_FAMILY_NAME,
         self::FIELD_NICKNAME,
         self::FIELD_EMAIL,
+        self::FIELD_PHONE_NUMBER,
+        self::FIELD_ORGANIZATION,
+        self::FIELD_LOCALE,
+        self::FIELD_ZONEINFO,
         self::FIELD_ORIGINAL_ID,
-        self::FIELD_REGISTER_TIME,
         self::FIELD_PERUN_ID,
         self::FIELD_PERUN_URL,
         self::FIELD_PERUN_VOS

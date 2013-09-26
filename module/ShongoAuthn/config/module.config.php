@@ -6,6 +6,7 @@ return array(
     ),
     
     'data_connectors' => array(
+        /*
         'perun-fake' => array(
             'class' => '\ShongoAuthn\User\DataConnector\PerunFake',
             'options' => array(
@@ -19,12 +20,31 @@ return array(
                 )
             )
         ),
+        */
         
         'perun-aa' => array(
             'class' => 'ShongoAuthn\User\DataConnector\PerunAa',
             'options' => array(
                 'perun_id_var_name' => 'perunUserId',
                 'perun_vo_name_var_name' => 'perunVoName'
+            )
+        ),
+        
+        'perun-ws' => array(
+            'class' => 'ShongoAuthn\User\DataConnector\PerunWs',
+            'options' => array(
+                'base_url' => 'https://hroch.cesnet.cz/devel/perun/',
+                'secret' => '87a3f70b9952c524673faef81ef99ba9',
+                'users_handler' => 'users/',
+                'http_client_config' => array(
+                    'adapter' => 'Zend\Http\Client\Adapter\Curl',
+                    'useragent' => 'Perun Client',
+                    'curloptions' => array(
+                        CURLOPT_SSL_VERIFYPEER => true,
+                        CURLOPT_SSL_VERIFYHOST => 2,
+                        CURLOPT_CAINFO => '/etc/ssl/certs/tcs-ca-bundle.pem'
+                    )
+                )
             )
         )
     ),
@@ -50,7 +70,7 @@ return array(
                     'REMOTE_USER' => array(
                         'name' => 'eppn',
                         'required' => true,
-                        'validators' => array()                        
+                        'validators' => array()
                     ),
                     'mail' => array(
                         'name' => 'mail',
