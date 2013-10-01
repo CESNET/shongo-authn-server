@@ -33,8 +33,9 @@ return array(
         'perun-ws' => array(
             'class' => 'ShongoAuthn\User\DataConnector\PerunWs',
             'options' => array(
-                'base_url' => 'https://hroch.cesnet.cz/devel/perun/',
-                'secret' => '87a3f70b9952c524673faef81ef99ba9',
+                'base_url' => 'https://perun-ws.example.org/',
+                'client_id' => 'client_id',
+                'client_secret' => 'client_secret',
                 'users_handler' => 'users/',
                 'http_client_config' => array(
                     'adapter' => 'Zend\Http\Client\Adapter\Curl',
@@ -42,7 +43,7 @@ return array(
                     'curloptions' => array(
                         CURLOPT_SSL_VERIFYPEER => true,
                         CURLOPT_SSL_VERIFYHOST => 2,
-                        CURLOPT_CAINFO => '/etc/ssl/certs/tcs-ca-bundle.pem'
+                        CURLOPT_CAINFO => '/etc/ssl/certs/ca-bundle.pem'
                     )
                 )
             )

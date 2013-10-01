@@ -15,7 +15,9 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
 
     const OPT_BASE_URL = 'base_url';
 
-    const OPT_SECRET = 'secret';
+    const OPT_CLIENT_ID = 'client_id';
+
+    const OPT_CLIENT_SECRET = 'client_secret';
 
     const OPT_USERS_HANDLER = 'users_handler';
 
@@ -70,17 +72,18 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     protected function getPerunUserData($perunId)
     {
         $requestUrl = $this->constructRequestUrl($perunId);
-        $secret = $this->getSecret();
+        $clientId = $this->getClientId();
+        $clientSecret = $this->getClientSecret();
         
-        $userData = $this->requestWs($requestUrl, $secret);
+        $userData = $this->requestWs($requestUrl, $clientId, $clientSecret);
         return $userData;
     }
 
 
-    protected function requestWs($requestUrl, $secret)
+    protected function requestWs($requestUrl, $clientId, $clientSecret)
     {
         $httpClient = $this->initHttpClient();
-        $httpRequest = $this->initHttpRequest($requestUrl, $secret);
+        $httpRequest = $this->initHttpRequest($requestUrl, $clientId, $clientSecret);
         
         try {
             $httpResponse = $httpClient->send($httpRequest);
@@ -127,11 +130,22 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
-    protected function getSecret()
+    protected function getClientId()
     {
-        $secret = $this->getOption(self::OPT_SECRET);
+        $id = $this->getOption(self::OPT_CLIENT_ID);
+        if (! $id) {
+            throw new Exception\MissingOptionException(self::OPT_CLIENT_ID);
+        }
+        
+        return $id;
+    }
+
+
+    protected function getClientSecret()
+    {
+        $secret = $this->getOption(self::OPT_CLIENT_SECRET);
         if (! $secret) {
-            throw new Exception\MissingOptionException(self::OPT_SECRET);
+            throw new Exception\MissingOptionException(self::OPT_CLIENT_SECRET);
         }
         
         return $secret;
@@ -146,7 +160,7 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
-    protected function initHttpRequest($requestUrl, $secret)
+    protected function initHttpRequest($requestUrl, $clientId, $clientSecret)
     {
         $httpRequest = new Http\Request();
         $httpRequest->setUri($requestUrl);
@@ -154,7 +168,7 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
         $httpRequest->getHeaders()->addHeaders(
             array(
                 'Accept' => 'application/json',
-                'Authorization' => $secret
+                'Authorization' => 'Basic ' . base64_encode("$clientId:$clientSecret")
             ));
         
         return $httpRequest;
