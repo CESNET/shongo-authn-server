@@ -6,21 +6,6 @@ return array(
     ),
     
     'data_connectors' => array(
-        /*
-        'perun-fake' => array(
-            'class' => '\ShongoAuthn\User\DataConnector\PerunFake',
-            'options' => array(
-                'adapter' => array(
-                    'driver' => 'Pdo_Mysql',
-                    'host' => 'localhost',
-                    'dbname' => 'shongo',
-                    'username' => 'user',
-                    'password' => 'passwd',
-                    'charset' => 'utf8'
-                )
-            )
-        ),
-        */
         
         'perun-aa' => array(
             'class' => 'ShongoAuthn\User\DataConnector\PerunAa',
@@ -41,9 +26,11 @@ return array(
                     'adapter' => 'Zend\Http\Client\Adapter\Curl',
                     'useragent' => 'Perun Client',
                     'curloptions' => array(
+                        /*
                         CURLOPT_SSL_VERIFYPEER => true,
                         CURLOPT_SSL_VERIFYHOST => 2,
                         CURLOPT_CAINFO => '/etc/ssl/certs/ca-bundle.pem'
+                        */
                     )
                 )
             )
