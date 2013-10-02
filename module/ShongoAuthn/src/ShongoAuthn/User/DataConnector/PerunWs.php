@@ -24,6 +24,9 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     const OPT_HTTP_CLIENT_CONFIG = 'http_client_config';
 
     protected $fieldMap = array(
+        'display_name' => User::FIELD_NAME,
+        'first_name' => User::FIELD_GIVEN_NAME,
+        'last_name' => User::FIELD_FAMILY_NAME,
         'mail' => User::FIELD_EMAIL,
         'phone' => User::FIELD_PHONE_NUMBER,
         'organization' => User::FIELD_ORGANIZATION,

@@ -6,19 +6,45 @@ use InoOicServer\User\UserInterface;
 use InoOicServer\User\UserInfo\Mapper\AbstractMapper;
 
 
+/**
+ * Maps user fields to output fields.
+ */
 class Shongo extends AbstractMapper
 {
 
+    /**
+     * @var array
+     */
+    protected $fieldMap = array(
+        'perun_id' => 'id',
+        'id' => 'original_id',
+        'name' => 'display_name',
+        'given_name' => 'first_name',
+        'family_name' => 'last_name',
+        'email' => 'mail',
+        'phone_number' => 'phone',
+        'organization' => 'organization',
+        'locale' => 'language',
+        'perun_url' => 'perun_url',
+        'zoneinfo' => 'zoneinfo'
+    );
 
-    public function getUserInfoData (UserInterface $user)
+
+    /**
+     * {@inheritdoc}
+     * @see \InoOicServer\User\UserInfo\Mapper\MapperInterface::getUserInfoData()
+     */
+    public function getUserInfoData(UserInterface $user)
     {
-        $data = $user->toArray();
+        $userData = $user->toArray();
         
-        $data['original_id'] = $data['id'];
-        $data['id'] = $data['perun_id'];
-        unset($data['perun_id']);
-        unset($data['perun_vos']);
+        $mappedData = array();
+        foreach ($this->fieldMap as $userField => $outputField) {
+            if (isset($userData[$userField])) {
+                $mappedData[$outputField] = $userData[$userField];
+            }
+        }
         
-        return $data;
+        return $mappedData;
     }
 }
