@@ -26,7 +26,8 @@ class Shongo extends AbstractMapper
         'organization' => 'organization',
         'locale' => 'language',
         'perun_url' => 'perun_url',
-        'zoneinfo' => 'zoneinfo'
+        'zoneinfo' => 'zoneinfo',
+        'principal_names' => 'principal_names'
     );
 
 

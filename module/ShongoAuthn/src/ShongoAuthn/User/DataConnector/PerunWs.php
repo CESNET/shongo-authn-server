@@ -10,6 +10,9 @@ use InoOicServer\User\DataConnector\AbstractDataConnector;
 use InoOicServer\User\UserInterface;
 
 
+/**
+ * Data connector for fetching user information from Perun through a web service.
+ */
 class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterface
 {
 
@@ -23,6 +26,9 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
 
     const OPT_HTTP_CLIENT_CONFIG = 'http_client_config';
 
+    /**
+     * @var array
+     */
     protected $fieldMap = array(
         'display_name' => User::FIELD_NAME,
         'first_name' => User::FIELD_GIVEN_NAME,
@@ -31,7 +37,8 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
         'phone' => User::FIELD_PHONE_NUMBER,
         'organization' => User::FIELD_ORGANIZATION,
         'language' => User::FIELD_LOCALE,
-        'timezone' => User::FIELD_ZONEINFO
+        'timezone' => User::FIELD_ZONEINFO,
+        'principal_names' => User::FIELD_PRINCIPAL_NAMES
     );
 
 
@@ -91,9 +98,7 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
         try {
             $httpResponse = $httpClient->send($httpRequest);
         } catch (\Exception $e) {
-            throw new Exception\TransportException(
-                sprintf("HTTP client exception: [%s] %s, request URL: %s", get_class($e), $e->getMessage(), $requestUrl), 
-                null, $e);
+            throw new Exception\TransportException(sprintf("HTTP client exception: [%s] %s, request URL: %s", get_class($e), $e->getMessage(), $requestUrl), null, $e);
         }
         
         $statusCode = $httpResponse->getStatusCode();
@@ -112,8 +117,7 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
         try {
             $userData = $this->decodeJsonData($rawData);
         } catch (\Exception $e) {
-            throw new Exception\InvalidServerDataException(
-                sprintf("Error decoding JSON: [%s] %s", get_class($e), $e->getMessage()), null, $e);
+            throw new Exception\InvalidServerDataException(sprintf("Error decoding JSON: [%s] %s", get_class($e), $e->getMessage()), null, $e);
         }
         
         return $userData;
@@ -168,11 +172,10 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
         $httpRequest = new Http\Request();
         $httpRequest->setUri($requestUrl);
         $httpRequest->setMethod('get');
-        $httpRequest->getHeaders()->addHeaders(
-            array(
-                'Accept' => 'application/json',
-                'Authorization' => 'Basic ' . base64_encode("$clientId:$clientSecret")
-            ));
+        $httpRequest->getHeaders()->addHeaders(array(
+            'Accept' => 'application/json',
+            'Authorization' => 'Basic ' . base64_encode("$clientId:$clientSecret")
+        ));
         
         return $httpRequest;
     }

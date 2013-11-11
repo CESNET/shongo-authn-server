@@ -20,19 +20,22 @@ class PerunWsTest extends \PHPUnit_Framework_TestCase
 
     public function testPopulateShongoUserData()
     {
-        $user = new User(
-            array(
-                'id' => 'foo@bar.com',
-                'given_name' => 'Foo',
-                'family_name' => 'Bar',
-                'name' => 'Foo Bar',
-                'email' => 'foobar@foo.com',
-                'organization' => 'Foo Inc.',
-                'phone_number' => '123456',
-                'locale' => 'en',
-                'zoneinfo' => 'UTC',
-                'perun_id' => 123
-            ));
+        $user = new User(array(
+            'id' => 'foo@bar.com',
+            'given_name' => 'Foo',
+            'family_name' => 'Bar',
+            'name' => 'Foo Bar',
+            'email' => 'foobar@foo.com',
+            'organization' => 'Foo Inc.',
+            'phone_number' => '123456',
+            'locale' => 'en',
+            'zoneinfo' => 'UTC',
+            'perun_id' => 123,
+            'principal_names' => array(
+                'foo@example.org',
+                'bar@example.org'
+            )
+        ));
         
         $expected = array(
             'id' => 'foo@bar.com',
@@ -44,7 +47,11 @@ class PerunWsTest extends \PHPUnit_Framework_TestCase
             'phone_number' => '123456P',
             'locale' => 'enP',
             'zoneinfo' => 'UTCP',
-            'perun_id' => 123
+            'perun_id' => 123,
+            'principal_names' => array(
+                'foo@example.org',
+                'bar@example.org'
+            )
         );
         
         $perunUserData = array(
@@ -56,7 +63,8 @@ class PerunWsTest extends \PHPUnit_Framework_TestCase
             'organization' => $expected['organization'],
             'phone' => $expected['phone_number'],
             'language' => $expected['locale'],
-            'timezone' => $expected['zoneinfo']
+            'timezone' => $expected['zoneinfo'],
+            'principal_names' => $expected['principal_names']
         );
         
         $dataConnector = $this->getMockBuilder('ShongoAuthn\User\DataConnector\PerunWs')

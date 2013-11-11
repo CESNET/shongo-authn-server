@@ -12,8 +12,8 @@ namespace ShongoAuthn\User;
  * @method void setOrganization(string $organization)
  * @method string getLocale()
  * @method void setLocale(string $locale)
- * @method string getZoneInfo()
- * @method void setZoneIndo(string $zoneInfo)
+ * @method string getZoneinfo()
+ * @method void setZoneinfo(string $zoneInfo)
  * @method string getOriginalId()
  * @method void setOriginalId(string $originalId)
  * @method integer getPerunId()
@@ -22,6 +22,8 @@ namespace ShongoAuthn\User;
  * @method void setPerunUrl(string $perunUrl)
  * @method array getPerunVos()
  * @method void setPerunVos(array $vos)
+ * @method array getPrincipalNames()
+ * @method void setPrincipalNames(array $principalNames)
  */
 class User extends \InoOicServer\User\User
 {
@@ -41,6 +43,8 @@ class User extends \InoOicServer\User\User
     const FIELD_PERUN_URL = 'perun_url';
 
     const FIELD_PERUN_VOS = 'perun_vos';
+    
+    const FIELD_PRINCIPAL_NAMES = 'principal_names';
 
     protected $_fields = array(
         self::FIELD_ID,
@@ -56,6 +60,7 @@ class User extends \InoOicServer\User\User
         self::FIELD_ORIGINAL_ID,
         self::FIELD_PERUN_ID,
         self::FIELD_PERUN_URL,
-        self::FIELD_PERUN_VOS
+        self::FIELD_PERUN_VOS,
+        self::FIELD_PRINCIPAL_NAMES
     );
 }

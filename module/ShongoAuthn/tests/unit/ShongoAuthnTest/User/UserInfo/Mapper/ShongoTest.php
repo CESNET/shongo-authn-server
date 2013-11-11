@@ -31,6 +31,10 @@ class ShongoTest extends \PHPUnit_Framework_TestCase
         $phone = '123456';
         $zoneInfo = 'CET';
         $perunUrl = 'http://perun/url';
+        $principalNames = array(
+            'foo',
+            'bar'
+        );
         
         $user = new User();
         $user->setId($id);
@@ -44,6 +48,7 @@ class ShongoTest extends \PHPUnit_Framework_TestCase
         $user->setPhoneNumber($phone);
         $user->setZoneinfo($zoneInfo);
         $user->setPerunUrl($perunUrl);
+        $user->setPrincipalNames($principalNames);
         
         $expected = array(
             'id' => $perunId,
@@ -56,7 +61,11 @@ class ShongoTest extends \PHPUnit_Framework_TestCase
             'language' => $language,
             'phone' => $phone,
             'zoneinfo' => $zoneInfo,
-            'perun_url' => $perunUrl
+            'perun_url' => $perunUrl,
+            'principal_names' => array(
+                'foo',
+                'bar'
+            )
         );
         
         $this->assertEquals($expected, $this->mapper->getUserInfoData($user));
