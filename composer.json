@@ -22,6 +22,6 @@
         "zendframework/zend-form" : ">=2.2.0",
         "zendframework/zend-view" : ">=2.2.0",
         "zendframework/zend-console" : ">=2.2.0",
-        "ivan-novakov/zf2-openid-connect-server-module" : "dev-master"
+        "ivan-novakov/zf2-openid-connect-server-module" : "0.7.2@dev"
     }
 }
