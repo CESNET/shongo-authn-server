@@ -7,6 +7,8 @@ use Zend\Http;
 use InoOicServer\User\Validator\AbstractValidator;
 use InoOicServer\User\UserInterface;
 use InoOicServer\User\Validator\Exception\InvalidUserException;
+use ShongoAuthn\Util\CookieManager;
+use ShongoAuthn\User\ShongoUserInterface;
 
 
 class PerunUser extends AbstractValidator
@@ -20,22 +22,61 @@ class PerunUser extends AbstractValidator
 
     const GET_PARAM_RETURN_URL = 'targetnew';
 
+    /**
+     * @var CookieManager
+     */
+    protected $cookieManager;
+
+
+    /**
+     * @return CookieManager
+     */
+    public function getCookieManager()
+    {
+        if (! $this->cookieManager instanceof CookieManager) {
+            $this->cookieManager = new CookieManager();
+        }
+        return $this->cookieManager;
+    }
+
+
+    /**
+     * @param CookieManager $cookieManager
+     */
+    public function setCookieManager($cookieManager)
+    {
+        $this->cookieManager = $cookieManager;
+    }
+
 
     public function validate(UserInterface $user)
     {
+        $this->validateShongoUser($user);
+    }
+
+
+    public function validateShongoUser(ShongoUserInterface $user)
+    {
         /* @var $user \ShongoAuthn\User\User */
-        if ($user->getPerunId() && in_array(self::VO_SHONGO_NAME, $user->getPerunVos())) {
+        
+        /*
+         * No need to check the VO anymore, it is handled by the PerunWs data connector.
+        * The connector is supposed to retrieve only users from the right VO.
+        */
+        /*
+         if ($user->getPerunId() && in_array(self::VO_SHONGO_NAME, $user->getPerunVos())) {
+        return;
+        }
+        */
+        if (0 !== intval($user->getPerunId())) {
             return;
         }
         
-        // FIXME - more elegant way
-        foreach ($_COOKIE as $name => $value) {
-            setcookie($name, null, null, '/');
-        }
+        $this->getCookieManager()->clearCookies();
         
-        $e = new InvalidUserException(sprintf("User '%s' is not registered"));
-        $redirectUri = $this->getRedirectUri();
-        $e->setRedirectUri($redirectUri);
+        $e = new InvalidUserException(sprintf("User '%s' is not registered", $user->getId()));
+        $e->setRedirectUri($this->getRedirectUri());
+        
         throw $e;
     }
 
@@ -43,11 +84,10 @@ class PerunUser extends AbstractValidator
     protected function getRedirectUri()
     {
         $uri = new Uri\Http($this->getOption(self::OPT_REGISTRATION_URI));
-        $uri->setQuery(
-            array(
-                self::GET_PARAM_VO => self::VO_SHONGO_NAME,
-                self::GET_PARAM_RETURN_URL => $this->getReturnUri()
-            ));
+        $uri->setQuery(array(
+            self::GET_PARAM_VO => self::VO_SHONGO_NAME,
+            self::GET_PARAM_RETURN_URL => $this->getReturnUri()
+        ));
         
         return $uri->toString();
     }

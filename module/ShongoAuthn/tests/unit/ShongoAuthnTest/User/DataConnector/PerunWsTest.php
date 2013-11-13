@@ -55,7 +55,7 @@ class PerunWsTest extends \PHPUnit_Framework_TestCase
         );
         
         $perunUserData = array(
-            'id' => $expected['id'],
+            'id' => $expected['perun_id'],
             'first_name' => $expected['given_name'],
             'last_name' => $expected['family_name'],
             'display_name' => $expected['name'],
@@ -74,7 +74,7 @@ class PerunWsTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $dataConnector->expects($this->once())
             ->method('getPerunUserData')
-            ->with($expected['perun_id'])
+            ->with($user)
             ->will($this->returnValue($perunUserData));
         
         $dataConnector->populateShongoUser($user);

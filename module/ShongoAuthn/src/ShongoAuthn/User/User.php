@@ -25,7 +25,7 @@ namespace ShongoAuthn\User;
  * @method array getPrincipalNames()
  * @method void setPrincipalNames(array $principalNames)
  */
-class User extends \InoOicServer\User\User
+class User extends \InoOicServer\User\User implements ShongoUserInterface
 {
 
     const FIELD_PHONE_NUMBER = 'phone_number';
@@ -43,7 +43,7 @@ class User extends \InoOicServer\User\User
     const FIELD_PERUN_URL = 'perun_url';
 
     const FIELD_PERUN_VOS = 'perun_vos';
-    
+
     const FIELD_PRINCIPAL_NAMES = 'principal_names';
 
     protected $_fields = array(
@@ -63,4 +63,10 @@ class User extends \InoOicServer\User\User
         self::FIELD_PERUN_VOS,
         self::FIELD_PRINCIPAL_NAMES
     );
+
+
+    public function getPerunId()
+    {
+        return $this->getValue(self::FIELD_PERUN_ID);
+    }
 }

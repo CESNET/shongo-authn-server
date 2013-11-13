@@ -12,6 +12,8 @@ use InoOicServer\User\UserInterface;
 
 /**
  * Data connector for fetching user information from Perun through a web service.
+ * 
+ * @todo Implement Perun API calls as a separate object (Perun REST Client).
  */
 class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterface
 {
@@ -22,7 +24,9 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
 
     const OPT_CLIENT_SECRET = 'client_secret';
 
-    const OPT_USERS_HANDLER = 'users_handler';
+    const OPT_USERS_RESOURCE = 'users_resource';
+
+    const OPT_PRINCIPAL_RESOURCE = 'principal_resource';
 
     const OPT_HTTP_CLIENT_CONFIG = 'http_client_config';
 
@@ -30,6 +34,7 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
      * @var array
      */
     protected $fieldMap = array(
+        'id' => User::FIELD_PERUN_ID,
         'display_name' => User::FIELD_NAME,
         'first_name' => User::FIELD_GIVEN_NAME,
         'last_name' => User::FIELD_FAMILY_NAME,
@@ -58,12 +63,7 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
      */
     public function populateShongoUser(User $user)
     {
-        $perunId = $user->getPerunId();
-        if (! $perunId) {
-            return;
-        }
-        
-        $perunUserData = $this->getPerunUserData($perunId);
+        $perunUserData = $this->getPerunUserData($user);
         
         $userData = array();
         foreach ($this->fieldMap as $perunField => $userField) {
@@ -79,19 +79,47 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
-    protected function getPerunUserData($perunId)
+    protected function getPerunUserData(User $user)
     {
-        $requestUrl = $this->constructRequestUrl($perunId);
-        $clientId = $this->getClientId();
-        $clientSecret = $this->getClientSecret();
+        $perunId = $this->getUserPerunIdByPrincipalName($user->getId());
+        return $this->getPerunUserDataByPerunId($perunId);
+    }
+
+
+    protected function getUserPerunIdByPrincipalName($principalName)
+    {
+        $principalResourceName = $this->getOption(self::OPT_PRINCIPAL_RESOURCE, 'principal');
+        $requestUrl = $this->constructRequestUrl($principalResourceName, $principalName);
         
-        $userData = $this->requestWs($requestUrl, $clientId, $clientSecret);
+        $userData = $this->requestWs($requestUrl);
+        if (! isset($userData['id']) || 0 === intval($userData['id'])) {
+            throw new Exception\InvalidServerDataException(sprintf("The principal resource request returned no perun ID for principal name '%s'", $principalName));
+        }
+        
+        return $userData['id'];
+    }
+
+
+    protected function getPerunUserDataByPerunId($perunId)
+    {
+        $usersResourceName = $this->getOption(self::OPT_USERS_RESOURCE, 'users');
+        $requestUrl = $this->constructRequestUrl($usersResourceName, $perunId);
+        
+        $userData = $this->requestWs($requestUrl);
         return $userData;
     }
 
 
-    protected function requestWs($requestUrl, $clientId, $clientSecret)
+    protected function requestWs($requestUrl, $clientId = null, $clientSecret = null)
     {
+        if (null === $clientId) {
+            $clientId = $this->getClientId();
+        }
+        
+        if (null === $clientSecret) {
+            $clientSecret = $this->getClientSecret();
+        }
+        
         $httpClient = $this->initHttpClient();
         $httpRequest = $this->initHttpRequest($requestUrl, $clientId, $clientSecret);
         
@@ -124,16 +152,16 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
-    protected function constructRequestUrl($perunId)
+    protected function constructRequestUrl($resourceName, $resourceId)
     {
         $baseUrl = $this->getOption(self::OPT_BASE_URL);
         if (! $baseUrl) {
             throw new Exception\MissingOptionException(self::OPT_BASE_URL);
         }
         
-        $usersHandler = $this->getOption(self::OPT_USERS_HANDLER, 'users/');
+        // $usersHandler = $this->getOption(self::OPT_USERS_HANDLER, 'users/');
         
-        return $baseUrl . $usersHandler . $perunId;
+        return $baseUrl . $resourceName . '/' . $resourceId;
     }
 
 

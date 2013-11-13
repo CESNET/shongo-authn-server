@@ -7,6 +7,7 @@ return array(
     
     'data_connectors' => array(
         
+        /*
         'perun-aa' => array(
             'class' => 'ShongoAuthn\User\DataConnector\PerunAa',
             'options' => array(
@@ -14,6 +15,7 @@ return array(
                 'perun_vo_name_var_name' => 'perunVoName'
             )
         ),
+        */
         
         'perun-ws' => array(
             'class' => 'ShongoAuthn\User\DataConnector\PerunWs',
@@ -21,7 +23,8 @@ return array(
                 'base_url' => 'https://perun-ws.example.org/',
                 'client_id' => 'client_id',
                 'client_secret' => 'client_secret',
-                'users_handler' => 'users/',
+                'users_resource' => 'users',
+                'principal_resource' => 'principal',
                 'http_client_config' => array(
                     'adapter' => 'Zend\Http\Client\Adapter\Curl',
                     'useragent' => 'Perun Client',
