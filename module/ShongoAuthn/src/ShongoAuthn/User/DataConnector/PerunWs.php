@@ -64,6 +64,9 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     public function populateShongoUser(User $user)
     {
         $perunUserData = $this->getPerunUserData($user);
+        if (null === $perunUserData) {
+            return;
+        }
         
         $userData = array();
         foreach ($this->fieldMap as $perunField => $userField) {
@@ -82,7 +85,15 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     protected function getPerunUserData(User $user)
     {
         $perunId = $this->getUserPerunIdByPrincipalName($user->getId());
-        return $this->getPerunUserDataByPerunId($perunId);
+        try {
+            $userData = $this->getPerunUserDataByPerunId($perunId);
+        } catch (Exception\ErrorServerResponse $e) {
+            if (404 === $e->getCode()) {
+                $userData = null;
+            }
+        }
+        
+        return $userData;
     }
 
 
@@ -139,7 +150,7 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
                 $message .= sprintf(": [%s] %s", $errorData['title'], $errorData['detail']);
             } catch (\Exception $e) {}
             
-            throw new Exception\ErrorServerResponse($message);
+            throw new Exception\ErrorServerResponse($message, $statusCode);
         }
         
         try {
@@ -159,9 +170,7 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
             throw new Exception\MissingOptionException(self::OPT_BASE_URL);
         }
         
-        // $usersHandler = $this->getOption(self::OPT_USERS_HANDLER, 'users/');
-        
-        return $baseUrl . $resourceName . '/' . $resourceId;
+        return $baseUrl . $resourceName . '/' . $resourceId . '?fresh=1';
     }
 
 
