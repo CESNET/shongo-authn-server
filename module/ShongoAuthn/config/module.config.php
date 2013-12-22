@@ -6,17 +6,7 @@ return array(
     ),
     
     'data_connectors' => array(
-        
-        /*
-        'perun-aa' => array(
-            'class' => 'ShongoAuthn\User\DataConnector\PerunAa',
-            'options' => array(
-                'perun_id_var_name' => 'perunUserId',
-                'perun_vo_name_var_name' => 'perunVoName'
-            )
-        ),
-        */
-    
+
         'shibboleth' => array(
             'class' => 'ShongoAuthn\User\DataConnector\Shibboleth'
         ),

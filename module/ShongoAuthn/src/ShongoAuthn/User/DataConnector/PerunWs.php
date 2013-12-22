@@ -115,6 +115,12 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
+    /**
+     * Retrieve Perun related user data or null, if the user hasn't been registered.
+     * 
+     * @param User $user
+     * @return array|null
+     */
     protected function getPerunUserData(User $user)
     {
         try {
@@ -130,6 +136,13 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
+    /**
+     * Get user's Perun ID by principal name.
+     * 
+     * @param string $principalName
+     * @throws Exception\InvalidServerDataException
+     * @return integer
+     */
     protected function getUserPerunIdByPrincipalName($principalName)
     {
         $principalResourceName = $this->getOption(self::OPT_PRINCIPAL_RESOURCE, 'principal');
@@ -144,6 +157,12 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
+    /**
+     * Retrieves user's Perun data by their Perun ID.
+     * 
+     * @param integer $perunId
+     * @return array
+     */
     protected function getPerunUserDataByPerunId($perunId)
     {
         $usersResourceName = $this->getOption(self::OPT_USERS_RESOURCE, 'users');
@@ -154,6 +173,17 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
+    /**
+     * Performs a request to Perun WS.
+     * 
+     * @param string $requestUrl
+     * @param string $clientId
+     * @param string $clientSecret
+     * @throws Exception\TransportException
+     * @throws Exception\ErrorServerResponse
+     * @throws Exception\InvalidServerDataException
+     * @return array
+     */
     protected function requestWs($requestUrl, $clientId = null, $clientSecret = null)
     {
         if (null === $clientId) {
@@ -196,6 +226,14 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
+    /**
+     * Constructs a Perun request URL.
+     * 
+     * @param string $resourceName
+     * @param integer $resourceId
+     * @throws Exception\MissingOptionException
+     * @return string
+     */
     protected function constructRequestUrl($resourceName, $resourceId)
     {
         $baseUrl = $this->getOption(self::OPT_BASE_URL);
@@ -207,6 +245,12 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
+    /**
+     * Returns the Perun WS client ID.
+     * 
+     * @throws Exception\MissingOptionException
+     * @return string
+     */
     protected function getClientId()
     {
         $id = $this->getOption(self::OPT_CLIENT_ID);
@@ -218,6 +262,12 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
+    /**
+     * Returns the Perun WS client secret.
+     * 
+     * @throws Exception\MissingOptionException
+     * @return unknown
+     */
     protected function getClientSecret()
     {
         $secret = $this->getOption(self::OPT_CLIENT_SECRET);
@@ -229,6 +279,11 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
+    /**
+     * Initializes the HTTP client.
+     * 
+     * @return Http\Client
+     */
     protected function initHttpClient()
     {
         $httpClientConfig = $this->getOption(self::OPT_HTTP_CLIENT_CONFIG, array());
@@ -237,6 +292,14 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
+    /**
+     * Initializes a HTTP request.
+     * 
+     * @param string $requestUrl
+     * @param string $clientId
+     * @param string $clientSecret
+     * @return Http\Request
+     */
     protected function initHttpRequest($requestUrl, $clientId, $clientSecret)
     {
         $httpRequest = new Http\Request();
@@ -251,6 +314,12 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
     }
 
 
+    /**
+     * Decodes a JSON encoded string.
+     * 
+     * @param string $jsonData
+     * @return array
+     */
     protected function decodeJsonData($jsonData)
     {
         return Json\Json::decode($jsonData, Json\Json::TYPE_ARRAY);
