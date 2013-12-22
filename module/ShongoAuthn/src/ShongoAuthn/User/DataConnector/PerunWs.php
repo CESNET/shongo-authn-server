@@ -117,8 +117,8 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
 
     protected function getPerunUserData(User $user)
     {
-        $perunId = $this->getUserPerunIdByPrincipalName($user->getId());
         try {
+            $perunId = $this->getUserPerunIdByPrincipalName($user->getId());
             $userData = $this->getPerunUserDataByPerunId($perunId);
         } catch (Exception\ErrorServerResponse $e) {
             if (404 === $e->getCode()) {
