@@ -24,8 +24,10 @@ namespace ShongoAuthn\User;
  * @method void setPerunVos(array $vos)
  * @method array getPrincipalNames()
  * @method void setPrincipalNames(array $principalNames)
- * @method array getAuthenticationInfo()
- * @method void setAuthenticationInfo(array $authenticationInfo)
+ * @method \ShongoAuthn\User\AuthenticationInfo getAuthenticationInfo()
+ * @method void setAuthenticationInfo(\ShongoAuthn\User\AuthenticationInfo $authenticationInfo)
+ * @method integer getLoa()
+ * @method void setLoa(integer $loa)
  */
 class User extends \InoOicServer\User\User implements ShongoUserInterface
 {
@@ -50,6 +52,8 @@ class User extends \InoOicServer\User\User implements ShongoUserInterface
 
     const FIELD_AUTHENTICATION_INFO = 'authentication_info';
 
+    const FIELD_LOA = 'loa';
+
     protected $_fields = array(
         self::FIELD_ID,
         self::FIELD_NAME,
@@ -66,12 +70,27 @@ class User extends \InoOicServer\User\User implements ShongoUserInterface
         self::FIELD_PERUN_URL,
         self::FIELD_PERUN_VOS,
         self::FIELD_PRINCIPAL_NAMES,
-        self::FIELD_AUTHENTICATION_INFO
+        self::FIELD_AUTHENTICATION_INFO,
+        self::FIELD_LOA
     );
 
 
     public function getPerunId()
     {
         return $this->getValue(self::FIELD_PERUN_ID);
+    }
+
+
+    public function toArray()
+    {
+        $data = parent::toArray();
+        
+        if (isset($data['authentication_info']) && $data['authentication_info'] instanceof AuthenticationInfo) {
+            $authenticationInfo = $data['authentication_info'];
+            
+            $data['authentication_info'] = $authenticationInfo->toArray();
+        }
+        
+        return $data;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace ShongoAuthnTest\User\DataConnector;
 
+use ShongoAuthn\User\AuthenticationInfo;
 use ShongoAuthn\User\DataConnector\PerunWs;
 use ShongoAuthn\User\User;
 
@@ -20,6 +21,11 @@ class PerunWsTest extends \PHPUnit_Framework_TestCase
 
     public function testPopulateShongoUserData()
     {
+        $loa = 13;
+        $authenticationInfo = new AuthenticationInfo('fooProvider', 'yesterday');
+        $expectedAuthenticationInfo = clone $authenticationInfo;
+        $expectedAuthenticationInfo->setLoa($loa);
+        
         $user = new User(array(
             'id' => 'foo@bar.com',
             'given_name' => 'Foo',
@@ -34,7 +40,8 @@ class PerunWsTest extends \PHPUnit_Framework_TestCase
             'principal_names' => array(
                 'foo@example.org',
                 'bar@example.org'
-            )
+            ),
+            'authentication_info' => $authenticationInfo
         ));
         
         $expected = array(
@@ -51,7 +58,8 @@ class PerunWsTest extends \PHPUnit_Framework_TestCase
             'principal_names' => array(
                 'foo@example.org',
                 'bar@example.org'
-            )
+            ),
+            'authentication_info' => $expectedAuthenticationInfo->toArray()
         );
         
         $perunUserData = array(
@@ -64,7 +72,13 @@ class PerunWsTest extends \PHPUnit_Framework_TestCase
             'phone' => $expected['phone_number'],
             'language' => $expected['locale'],
             'timezone' => $expected['zoneinfo'],
-            'principal_names' => $expected['principal_names']
+            'principal_names' => $expected['principal_names'],
+            'sources' => array(
+                array(
+                    'name' => 'fooProvider',
+                    'loa' => $loa
+                )
+            )
         );
         
         $dataConnector = $this->getMockBuilder('ShongoAuthn\User\DataConnector\PerunWs')
@@ -80,13 +94,97 @@ class PerunWsTest extends \PHPUnit_Framework_TestCase
         $dataConnector->populateShongoUser($user);
         $this->assertEquals($expected, $user->toArray());
     }
+
+
+    public function testResolveUserLoAWithMissingSources()
+    {
+        $this->setExpectedException('ShongoAuthn\User\DataConnector\Exception\InvalidServerDataException');
+        
+        $user = $this->getUserMock();
+        $dataConnector = new PerunWs();
+        $dataConnector->resolveUserLoa($user, array());
+    }
+
+
+    public function testResolveUserLoAWithMissingSourcesData()
+    {
+        $this->setExpectedException('ShongoAuthn\User\DataConnector\Exception\InvalidServerDataException');
+        
+        $authenticationInfo = new AuthenticationInfo('fooProvider', 'yesterday');
+        
+        $user = $this->getUserMock();
+        $user->expects($this->once())
+            ->method('getAuthenticationInfo')
+            ->will($this->returnValue($authenticationInfo));
+        
+        $dataConnector = new PerunWs();
+        $dataConnector->resolveUserLoa($user, array(
+            'sources' => array()
+        ));
+    }
+
+
+    public function testResolveUserLoAWithMissingLoa()
+    {
+        $this->setExpectedException('ShongoAuthn\User\DataConnector\Exception\InvalidServerDataException');
+        
+        $authenticationInfo = new AuthenticationInfo('fooProvider', 'yesterday');
+        
+        $user = $this->getUserMock();
+        $user->expects($this->once())
+            ->method('getAuthenticationInfo')
+            ->will($this->returnValue($authenticationInfo));
+        
+        $dataConnector = new PerunWs();
+        $dataConnector->resolveUserLoa($user, array(
+            'sources' => array(
+                array(
+                    'name' => 'fooProvider'
+                )
+            )
+        ));
+    }
+
+
+    public function testResolveUserLoA()
+    {
+        $loa = 13;
+        
+        $authenticationInfo = new AuthenticationInfo('fooProvider', 'yesterday');
+        $this->assertSame(0, $authenticationInfo->getLoa());
+        
+        $user = $this->getUserMock();
+        $user->expects($this->once())
+            ->method('getAuthenticationInfo')
+            ->will($this->returnValue($authenticationInfo));
+        
+        $dataConnector = new PerunWs();
+        $dataConnector->resolveUserLoa($user, array(
+            'sources' => array(
+                array(
+                    'name' => 'fooProvider',
+                    'loa' => $loa
+                )
+            )
+        ));
+        
+        $this->assertSame($loa, $authenticationInfo->getLoa());
+    }
     
     /*
      * 
      */
+    
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
     protected function getUserMock()
     {
-        $user = $this->getMockBuilder('ShongoAuthn\User\User')->getMock();
+        $user = $this->getMockBuilder('ShongoAuthn\User\User')
+            ->setMethods(array(
+            'getAuthenticationInfo'
+        ))
+            ->getMock();
         return $user;
     }
 }

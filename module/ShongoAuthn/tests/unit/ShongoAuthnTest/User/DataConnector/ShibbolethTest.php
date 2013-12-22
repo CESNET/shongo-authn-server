@@ -39,13 +39,8 @@ class ShibbolethTest extends \PHPUnit_Framework_Testcase
         );
         
         $mapping = array(
-            'var1' => 'foo',
-            'var3' => 'bar'
-        );
-        
-        $expected = array(
-            'foo' => 'value1',
-            'bar' => 'value3'
+            'var1' => 'provider',
+            'var3' => 'instant'
         );
         
         $this->dataConnector->setServerVars($serverVars);
@@ -57,6 +52,10 @@ class ShibbolethTest extends \PHPUnit_Framework_Testcase
         
         $this->dataConnector->populateShongoUser($user);
         
-        $this->assertEquals($expected, $user->getAuthenticationInfo());
+        $authenticationInfo = $user->getAuthenticationInfo();
+        
+        $this->assertInstanceOf('ShongoAuthn\User\AuthenticationInfo', $authenticationInfo);
+        $this->assertSame('value1', $authenticationInfo->getProvider());
+        $this->assertSame('value3', $authenticationInfo->getInstant());
     }
 }

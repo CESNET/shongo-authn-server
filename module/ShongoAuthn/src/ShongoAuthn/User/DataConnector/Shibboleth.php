@@ -2,6 +2,7 @@
 
 namespace ShongoAuthn\User\DataConnector;
 
+use ShongoAuthn\User\AuthenticationInfo;
 use InoOicServer\User\DataConnector\AbstractDataConnector;
 use InoOicServer\User\UserInterface;
 use ShongoAuthn\User\User;
@@ -79,14 +80,35 @@ class Shibboleth extends AbstractDataConnector implements ShongoDataConnectorInt
      */
     public function populateShongoUser(User $user)
     {
-        $authenticationInfo = array();
+        $attributes = array();
         foreach ($this->getAttributeMapping() as $serverVarName => $internalVarName) {
             if ($value = $this->getServerVar($serverVarName)) {
-                $authenticationInfo[$internalVarName] = $value;
+                $attributes[$internalVarName] = $value;
             }
         }
         
-        $user->setAuthenticationInfo($authenticationInfo);
+        $this->populateAuthenticationInfo($user, $attributes);
+    }
+
+
+    /**
+     * Extracts the needed attributes and populates user's authentication info.
+     * 
+     * @param User $user
+     * @param array $attributes
+     * @throws Exception\IncompleteUserDataException
+     */
+    public function populateAuthenticationInfo(User $user, array $attributes)
+    {
+        if (! isset($attributes['provider'])) {
+            throw new Exception\IncompleteUserDataException('Missing authentication provider info');
+        }
+        
+        if (! isset($attributes['instant'])) {
+            throw new Exception\IncompleteUserDataException('Missing authentication instant info');
+        }
+        
+        $user->setAuthenticationInfo(new AuthenticationInfo($attributes['provider'], $attributes['instant']));
     }
 
 

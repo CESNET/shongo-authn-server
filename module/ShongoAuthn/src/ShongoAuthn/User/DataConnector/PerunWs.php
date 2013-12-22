@@ -79,6 +79,39 @@ class PerunWs extends AbstractDataConnector implements ShongoDataConnectorInterf
         if (isset($perunUserData['_links']['self']['href'])) {
             $user->setPerunUrl($perunUserData['_links']['self']['href']);
         }
+        
+        $this->resolveUserLoa($user, $perunUserData);
+    }
+
+
+    /**
+     * Resolves and sets the proper LoA setting for the current authentication provider.
+     * 
+     * @param User $user
+     * @param array $perunUserData
+     * @throws Exception\InvalidServerDataException
+     */
+    public function resolveUserLoa(User $user, array $perunUserData)
+    {
+        if (! isset($perunUserData['sources']) || ! is_array($perunUserData['sources'])) {
+            throw new Exception\InvalidServerDataException('Missing "sources" information');
+        }
+        
+        $authenticationInfo = $user->getAuthenticationInfo();
+        $providerName = $authenticationInfo->getProvider();
+        
+        foreach ($perunUserData['sources'] as $source) {
+            if (! isset($source['name']) || $source['name'] != $providerName) {
+                continue;
+            }
+            
+            if (isset($source['loa'])) {
+                $authenticationInfo->setLoa(intval($source['loa']));
+                return;
+            }
+        }
+        
+        throw new Exception\InvalidServerDataException(sprintf("Missing LoA information about the current provider '%s'", $providerName));
     }
 
 

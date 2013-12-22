@@ -88,4 +88,14 @@ class AuthenticationInfo
     {
         $this->loa = $loa;
     }
+
+
+    public function toArray()
+    {
+        return array(
+            'provider' => $this->getProvider(),
+            'instant' => $this->getInstant(),
+            'loa' => $this->getLoa()
+        );
+    }
 }

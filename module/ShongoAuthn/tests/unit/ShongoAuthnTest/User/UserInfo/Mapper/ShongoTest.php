@@ -35,6 +35,11 @@ class ShongoTest extends \PHPUnit_Framework_TestCase
             'foo',
             'bar'
         );
+        $authenticationInfo = array(
+            'provider' => 'fooProvider',
+            'instant' => 'yesterday',
+            'loa' => 13
+        );
         
         $user = new User();
         $user->setId($id);
@@ -49,6 +54,7 @@ class ShongoTest extends \PHPUnit_Framework_TestCase
         $user->setZoneinfo($zoneInfo);
         $user->setPerunUrl($perunUrl);
         $user->setPrincipalNames($principalNames);
+        $user->setAuthenticationInfo($authenticationInfo);
         
         $expected = array(
             'id' => $perunId,
@@ -65,7 +71,8 @@ class ShongoTest extends \PHPUnit_Framework_TestCase
             'principal_names' => array(
                 'foo',
                 'bar'
-            )
+            ),
+            'authentication_info' => $authenticationInfo
         );
         
         $this->assertEquals($expected, $this->mapper->getUserInfoData($user));

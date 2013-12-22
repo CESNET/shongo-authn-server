@@ -2,6 +2,7 @@
 
 namespace ShongoAuthnTest\User;
 
+use ShongoAuthn\User\AuthenticationInfo;
 use ShongoAuthn\User\User;
 
 
@@ -32,12 +33,13 @@ class UserTest extends \PHPUnit_Framework_TestCase
             'foo',
             'bar'
         );
-        $authenticationInfo = array(
-            'var1' => 'value1',
-            'var2' => 'value2'
-        );
         
-        $user = new User(array(
+        $provider = 'fooProvider';
+        $instant = 'yesterday';
+        $loa = 13;
+        $authenticationInfo = new AuthenticationInfo($provider, $instant, $loa);
+        
+        $userData = array(
             User::FIELD_ID => $id,
             User::FIELD_NAME => $name,
             User::FIELD_GIVEN_NAME => $givenName,
@@ -54,7 +56,9 @@ class UserTest extends \PHPUnit_Framework_TestCase
             User::FIELD_PERUN_VOS => $perunVos,
             User::FIELD_PRINCIPAL_NAMES => $principalNames,
             User::FIELD_AUTHENTICATION_INFO => $authenticationInfo
-        ));
+        );
+        
+        $user = new User($userData);
         
         $this->assertSame($id, $user->getId());
         $this->assertSame($name, $user->getName());
@@ -72,5 +76,14 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($perunVos, $user->getPerunVos());
         $this->assertSame($principalNames, $user->getPrincipalNames());
         $this->assertSame($authenticationInfo, $user->getAuthenticationInfo());
+        
+        $expectedUserData = $userData;
+        $expectedUserData['authentication_info'] = array(
+            'provider' => $provider,
+            'instant' => $instant,
+            'loa' => $loa
+        );
+        
+        $this->assertEquals($expectedUserData, $user->toArray());
     }
 }
