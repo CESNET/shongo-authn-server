@@ -32,6 +32,10 @@ class UserTest extends \PHPUnit_Framework_TestCase
             'foo',
             'bar'
         );
+        $authenticationInfo = array(
+            'var1' => 'value1',
+            'var2' => 'value2'
+        );
         
         $user = new User(array(
             User::FIELD_ID => $id,
@@ -48,7 +52,8 @@ class UserTest extends \PHPUnit_Framework_TestCase
             User::FIELD_PERUN_ID => $perunId,
             User::FIELD_PERUN_URL => $perunUrl,
             User::FIELD_PERUN_VOS => $perunVos,
-            User::FIELD_PRINCIPAL_NAMES => $principalNames
+            User::FIELD_PRINCIPAL_NAMES => $principalNames,
+            User::FIELD_AUTHENTICATION_INFO => $authenticationInfo
         ));
         
         $this->assertSame($id, $user->getId());
@@ -66,5 +71,6 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($perunUrl, $user->getPerunUrl());
         $this->assertSame($perunVos, $user->getPerunVos());
         $this->assertSame($principalNames, $user->getPrincipalNames());
+        $this->assertSame($authenticationInfo, $user->getAuthenticationInfo());
     }
 }

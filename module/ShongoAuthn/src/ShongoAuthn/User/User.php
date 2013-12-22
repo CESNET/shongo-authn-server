@@ -24,6 +24,8 @@ namespace ShongoAuthn\User;
  * @method void setPerunVos(array $vos)
  * @method array getPrincipalNames()
  * @method void setPrincipalNames(array $principalNames)
+ * @method array getAuthenticationInfo()
+ * @method void setAuthenticationInfo(array $authenticationInfo)
  */
 class User extends \InoOicServer\User\User implements ShongoUserInterface
 {
@@ -46,6 +48,8 @@ class User extends \InoOicServer\User\User implements ShongoUserInterface
 
     const FIELD_PRINCIPAL_NAMES = 'principal_names';
 
+    const FIELD_AUTHENTICATION_INFO = 'authentication_info';
+
     protected $_fields = array(
         self::FIELD_ID,
         self::FIELD_NAME,
@@ -61,7 +65,8 @@ class User extends \InoOicServer\User\User implements ShongoUserInterface
         self::FIELD_PERUN_ID,
         self::FIELD_PERUN_URL,
         self::FIELD_PERUN_VOS,
-        self::FIELD_PRINCIPAL_NAMES
+        self::FIELD_PRINCIPAL_NAMES,
+        self::FIELD_AUTHENTICATION_INFO
     );
 
 
