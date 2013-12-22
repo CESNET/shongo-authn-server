@@ -16,6 +16,10 @@ return array(
             )
         ),
         */
+    
+        'shibboleth' => array(
+            'class' => 'ShongoAuthn\User\DataConnector\Shibboleth'
+        ),
         
         'perun-ws' => array(
             'class' => 'ShongoAuthn\User\DataConnector\PerunWs',
