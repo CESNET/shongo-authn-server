@@ -1,35 +1,106 @@
 <?php
 return array(
     
-    'data_connectors' => array(
-
-        'perun-ws' => array(
-            'class' => 'ShongoAuthn\User\DataConnector\PerunWs',
-            'options' => array(
-                'base_url' => 'https://perun-ws.example.org/',
-                'client_id' => 'client_id',
-                'client_secret' => 'client_secret',
-                'users_handler' => 'users/',
-                'http_client_config' => array(
-                    'adapter' => 'Zend\Http\Client\Adapter\Curl',
-                    'useragent' => 'Perun Client',
-                    'curloptions' => array(
-                        CURLOPT_SSL_VERIFYPEER => true,
-                        CURLOPT_SSL_VERIFYHOST => 2,
-                        CURLOPT_CAINFO => '/etc/ssl/certs/ca-bundle.pem'
+    'oic_server' => array(
+    
+        'data_connectors' => array(
+    
+            'perun-ws' => array(
+                'class' => 'ShongoAuthn\User\DataConnector\PerunWs',
+                'options' => array(
+                    'base_url' => 'https://perun-ws.example.org/',
+                    'client_id' => 'client_id',
+                    'client_secret' => 'client_secret',
+                    'users_handler' => 'users/',
+                    'http_client_config' => array(
+                        'adapter' => 'Zend\Http\Client\Adapter\Curl',
+                        'useragent' => 'Perun Client',
+                        'curloptions' => array(
+                            CURLOPT_SSL_VERIFYPEER => true,
+                            CURLOPT_SSL_VERIFYHOST => 2,
+                            CURLOPT_CAINFO => '/etc/ssl/certs/ca-bundle.pem'
+                        )
+                    )
+                )
+            )   
+        ),
+        
+        'user_validators' => array(
+            'perun_user' => array(
+                'class' => 'ShongoAuthn\User\Validator\PerunUser',
+                'options' => array(
+                    'registration_uri' => 'https://perun.example.org/perun-registrar-fed/'
+                )
+            )
+        ),
+    
+        'oic_server_info' => array(
+            'base_uri' => 'https://oic.server.org/authn',
+        ),
+    
+        'oic_session_manager' => array(
+            'session_expire_interval' => 'PT1H',
+            'authorization_code_expire_interval' => 'PT5M',
+            'access_token_expire_interval' => 'PT12H',
+            'refresh_token_expire_interval' => 'PT24H'
+        ),
+        
+        'session_storage' => array(
+            'type' => 'MysqlLite',
+            'options' => array(                
+                'adapter' => array(
+                    'driver' => 'Pdo_Mysql',
+                    'host' => 'localhost',
+                    'database' => 'oic_server',
+                    'username' => 'admin',
+                    'password' => 'passwd'
+                )
+            )
+        ),
+        
+        'logger' => array(
+            'writers' => array(
+                'stream' => array(
+                    'options' => array(
+                        'stream' => '/data/var/log/server.log'
+                    ),
+                    'filters' => array(
+                        'priority' => 7
+                    ),
+                    'formatter' => array(
+                        'format' => '%timestamp% %priorityName% (%priority%): %message% %extra%',
+                        'dateTimeFormat' => 'Y-m-d H:i:s'
                     )
                 )
             )
-        )
+        ),
         
-    ),
-    
-    'user_validators' => array(
-        'perun_user' => array(
-            'class' => 'ShongoAuthn\User\Validator\PerunUser',
+        'client_registry_storage' => array(
+            'type' => 'SingleJsonFileStorage',
             'options' => array(
-                'registration_uri' => 'https://perun.example.org/perun-registrar-fed/'
+                'json_file' => 'data/client/metadata.json'
+            )
+        ),
+        
+        'authentication_handlers' => array(
+            
+            'basic-auth' => array(
+                'class' => 'InoOicServer\Authentication\Controller\BasicAuthController',
+                'options' => array(
+                    'file' => 'data/auth/users.php'
+                )
+            )
+        ),
+        
+        'user_validators' => array(
+            
+            'dummy' => array(
+                'class' => '\InoOicServer\User\Validator\Dummy',
+                'options' => array(
+                    'valid' => true,
+                    'redirect_uri' => 'http://registration.example.org/'
+                )
             )
         )
-    ),
+    )
 );
