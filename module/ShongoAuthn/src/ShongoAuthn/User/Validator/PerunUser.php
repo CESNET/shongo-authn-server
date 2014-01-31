@@ -58,21 +58,15 @@ class PerunUser extends AbstractValidator
     public function validateShongoUser(ShongoUserInterface $user)
     {
         /* @var $user \ShongoAuthn\User\User */
-        
-        /*
-         * No need to check the VO anymore, it is handled by the PerunWs data connector.
-        * The connector is supposed to retrieve only users from the right VO.
-        */
-        /*
-         if ($user->getPerunId() && in_array(self::VO_SHONGO_NAME, $user->getPerunVos())) {
-        return;
-        }
-        */
+
         if (0 !== intval($user->getPerunId())) {
             return;
         }
         
-        $this->getCookieManager()->clearCookies();
+        /*
+         * No need to delete cookies, the session can be re-used.
+         */
+        //$this->getCookieManager()->clearCookies();
         
         $e = new InvalidUserException(sprintf("User '%s' is not registered", $user->getId()));
         $e->setRedirectUri($this->getRedirectUri());
