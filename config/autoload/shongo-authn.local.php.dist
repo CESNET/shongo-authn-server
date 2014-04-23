@@ -29,6 +29,7 @@ return array(
             'perun_user' => array(
                 'class' => 'ShongoAuthn\User\Validator\PerunUser',
                 'options' => array(
+                    'vo_name' => 'shongo',
                     'registration_uri' => 'https://perun.example.org/perun-registrar-fed/'
                 )
             )

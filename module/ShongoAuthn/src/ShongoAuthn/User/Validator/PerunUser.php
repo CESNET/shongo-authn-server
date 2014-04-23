@@ -15,6 +15,8 @@ class PerunUser extends AbstractValidator
 {
 
     const OPT_REGISTRATION_URI = 'registration_uri';
+    
+    const OPT_VO_NAME = 'vo_name';
 
     const VO_SHONGO_NAME = 'shongo';
 
@@ -79,7 +81,8 @@ class PerunUser extends AbstractValidator
     {
         $uri = new Uri\Http($this->getOption(self::OPT_REGISTRATION_URI));
         $uri->setQuery(array(
-            self::GET_PARAM_VO => self::VO_SHONGO_NAME,
+            //self::GET_PARAM_VO => self::VO_SHONGO_NAME,
+            self::GET_PARAM_VO => $this->getOption(self::OPT_VO_NAME),
             self::GET_PARAM_RETURN_URL => $this->getReturnUri()
         ));
         
