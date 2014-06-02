@@ -39,10 +39,12 @@ class PerunUserTest extends \PHPUnit_Framework_TestCase
             ->method('getRedirectUri')
             ->will($this->returnValue($redirectUri));
         
+        /*
         $cookieManager = $this->getMock('ShongoAuthn\Util\CookieManager');
         $cookieManager->expects($this->once())
             ->method('clearCookies');
         $validator->setCookieManager($cookieManager);
+        */
         
         try {
             $validator->validate($user);

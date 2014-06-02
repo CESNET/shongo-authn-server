@@ -3,7 +3,7 @@
 namespace ShongoAuthn\User;
 
 
-class AuthenticationInfoTest extends \PHPUnit_Framework_Testcase
+class AuthenticationInfoTest extends \PHPUnit_Framework_TestCase
 {
 
 
