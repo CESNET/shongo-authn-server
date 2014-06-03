@@ -22,7 +22,7 @@
         "zendframework/zend-form" : "~2.3",
         "zendframework/zend-view" : "~2.3",
         "zendframework/zend-console" : "~2.3",
-        "ivan-novakov/zf2-openid-connect-server-module" : "0.7.4"
+        "ivan-novakov/zf2-openid-connect-server-module" : "0.7.5"
     },
 
     "require-dev" : {
