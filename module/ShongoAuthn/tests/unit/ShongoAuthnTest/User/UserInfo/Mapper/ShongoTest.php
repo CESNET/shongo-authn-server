@@ -72,7 +72,9 @@ class ShongoTest extends \PHPUnit_Framework_TestCase
                 'foo',
                 'bar'
             ),
-            'authentication_info' => $authenticationInfo
+            'authn_provider' => $authenticationInfo['provider'],
+            'authn_instant' => $authenticationInfo['instant'],
+            'loa' => $authenticationInfo['loa']
         );
         
         $this->assertEquals($expected, $this->mapper->getUserInfoData($user));

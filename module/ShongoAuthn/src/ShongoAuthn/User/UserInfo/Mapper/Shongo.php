@@ -27,8 +27,13 @@ class Shongo extends AbstractMapper
         'locale' => 'language',
         'perun_url' => 'perun_url',
         'zoneinfo' => 'zoneinfo',
-        'principal_names' => 'principal_names',
-        'authentication_info' => 'authentication_info'
+        'principal_names' => 'principal_names'
+    );
+
+    protected $authenticationInfoMap = array(
+        'provider' => 'authn_provider',
+        'instant' => 'authn_instant',
+        'loa' => 'loa'
     );
 
 
@@ -42,8 +47,27 @@ class Shongo extends AbstractMapper
         
         $mappedData = array();
         foreach ($this->fieldMap as $userField => $outputField) {
+            
             if (isset($userData[$userField])) {
                 $mappedData[$outputField] = $userData[$userField];
+            }
+        }
+        
+        if (isset($userData['authentication_info']) && is_array($userData['authentication_info'])) {
+            $authenticationInfoData = $this->extractAuthenticationInfoData($userData['authentication_info']);
+            $mappedData = array_merge($mappedData, $authenticationInfoData);
+        }
+        
+        return $mappedData;
+    }
+
+
+    protected function extractAuthenticationInfoData(array $authenticationInfo)
+    {
+        $mappedData = array();
+        foreach ($this->authenticationInfoMap as $inputField => $outputField) {
+            if (isset($authenticationInfo[$inputField])) {
+                $mappedData[$outputField] = $authenticationInfo[$inputField];
             }
         }
         
