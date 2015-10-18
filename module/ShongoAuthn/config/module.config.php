@@ -25,12 +25,12 @@ return array(
                         'adapter' => 'Zend\Http\Client\Adapter\Curl',
                         'useragent' => 'Perun Client',
                         'curloptions' => array(
-                        /*
-                        CURLOPT_SSL_VERIFYPEER => true,
-                        CURLOPT_SSL_VERIFYHOST => 2,
-                        CURLOPT_CAINFO => '/etc/ssl/certs/ca-bundle.pem'
-                        */
-                    )
+                            /*
+                            CURLOPT_SSL_VERIFYPEER => true,
+                            CURLOPT_SSL_VERIFYHOST => 2,
+                            CURLOPT_CAINFO => '/etc/ssl/certs/ca-bundle.pem'
+                            */
+                        )
                     )
                 )
             )
